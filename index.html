@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Temperamentos - Conrad Hock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .question-card {
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .radio-custom:checked + label {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-12 px-4 text-center shadow-lg">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-wider">Conhece-te a ti mesmo</h1>
+            <p class="text-xl opacity-90 font-light">Questionário "Os Temperamentos" de Conrad Hock</p>
+            <div class="mt-6 inline-block bg-white/10 px-4 py-2 rounded-full text-sm">
+                Responda de forma honesta, simples e sincera.
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto max-w-3xl p-6 -mt-8">
+        <div id="quiz-container" class="bg-white rounded-2xl shadow-xl p-8 mb-10">
+            <div id="questions-list" class="space-y-8">
+                <!-- As perguntas serão inseridas aqui via JS -->
+            </div>
+
+            <div class="mt-12 text-center border-t pt-10">
+                <button id="submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                    Ver Meu Resultado
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-container" class="hidden bg-white rounded-2xl shadow-2xl p-8 mb-10 border-t-8 border-blue-600">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Seu Temperamento é: <span id="temp-title" class="text-blue-600"></span></h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mt-8">
+                <div class="bg-green-50 p-6 rounded-xl border border-green-100">
+                    <h3 class="text-xl font-bold text-green-700 mb-4 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Pontos Fortes
+                    </h3>
+                    <ul id="temp-strengths" class="space-y-2 text-gray-700 list-disc list-inside"></ul>
+                </div>
+                <div class="bg-red-50 p-6 rounded-xl border border-red-100">
+                    <h3 class="text-xl font-bold text-red-700 mb-4 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Pontos Fracos
+                    </h3>
+                    <ul id="temp-weaknesses" class="space-y-2 text-gray-700 list-disc list-inside"></ul>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl italic text-gray-600 text-center">
+                "O temperamento não é um destino, mas um ponto de partida para o autoaperfeiçoamento."
+            </div>
+
+            <button onclick="location.reload()" class="mt-8 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-lg transition-colors">
+                Refazer Teste
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 px-4 text-center">
+        <p class="mb-2">CONHECE-TE A TI MESMO - CONRAD HOCK</p>
+        <p class="text-xs opacity-50 uppercase">Protected 関係者外秘</p>
+    </footer>
+
+    <script>
+        const questions = [
+            { text: "Fica logo com raiva quando o ofendem, e tende a se vingar e responder com um insulto imediatamente?", type: "colerico" },
+            { text: "Olha a vida sempre do ponto de vista mais sério?", type: "melancolico" },
+            { text: "Perde com facilidade a confiança nas pessoas mais próximas?", type: "melancolico" },
+            { text: "É muito inclinado a adular as pessoas que ama?", type: "sanguineo" },
+            { text: "Aceita as explicações cheias razões e motivos, mas fica irritado e resiste quando lhe dão ordens severas?", type: "colerico" },
+            { text: "Gosta de estar acompanhado e dos divertimentos?", type: "sanguineo" },
+            { text: "Seu pensamento facilmente se torna reflexivo, o que chega a atormentá-lo interiormente, mas sem deixar que os outros percebam?", type: "melancolico" },
+            { text: "Fica perturbado pela desordem ou pela injustiça?", type: "melancolico" },
+            { text: "Tem ou demonstra pouco interesse pelo que se passa consigo mesmo?", type: "flegmatico" },
+            { text: "Encontra dificuldade em confiar nas pessoas e sempre teme que os outros lhe guardem rancor?", type: "melancolico" },
+            { text: "Não gosta de longas reflexões e se distrai facilmente?", type: "sanguineo" },
+            { text: "Geralmente não se abala tanto no momento de uma ofensa, mas se sente muito pior algumas horas depois, ou até mesmo no dia seguinte?", type: "melancolico" },
+            { text: "Encontra dificuldade em negar a si mesmo a sua comida favorita?", type: "sanguineo" },
+            { text: "Irrita-se facilmente por uma ofensa, mas pouco tempo depois volta a ser amável?", type: "sanguineo" },
+            { text: "É uma pessoa entusiasta, não ficando satisfeito com o quotidiano, mas aspira a coisas nobres?", type: "colerico" },
+            { text: "Geralmente não gosta de admitir uma debilidade ou derrota?", type: "colerico" },
+            { text: "Gosta do silêncio, da solidão e de estar afastado da multidão?", type: "melancolico" },
+            { text: "Fica facilmente com ciúmes, inveja ou pouco caritativo?", type: "melancolico" },
+            { text: "Sente-se à vontade quando está em uma posição de comando?", type: "colerico" },
+            { text: "Passa muito tempo deliberando, ainda que lhe custe muito tomar decisões?", type: "flegmatico" },
+            { text: "Gosta que o adulem?", type: "sanguineo" },
+            { text: "Queixa-se por indisposições insignificantes e com frequência teme estar gravemente doente?", type: "melancolico" },
+            { text: "Tem grande tendência a relaxar-se, comendo e bebendo?", type: "sanguineo" },
+            { text: "Facilmente se desanima pelas dificuldades em seus empreendimentos?", type: "sanguineo" },
+            { text: "Encontra dificuldade em conhecer novas pessoas e encontrar palavras corretas?", type: "melancolico" },
+            { text: "É muito preocupado com a própria aparência?", type: "sanguineo" },
+            { text: "Persevera, mesmo com grandes dificuldade, até conseguir alcançar seu objetivo?", type: "colerico" },
+            { text: "Fica desconfiado e reservado diante de uma palavra rude?", type: "melancolico" },
+            { text: "Acha difícil guardar os olhos, os ouvidos e ficar calado?", type: "sanguineo" },
+            { text: "Aborrece aparecer em público e ser elogiado?", type: "melancolico" },
+            { text: "Deixa que os outros sejam preferidos, mas ao mesmo tempo se sente diminuído?", type: "melancolico" },
+            { text: "Desagradam-lhe (e inclusive odeia) as carícias e o sentimentalismo?", type: "colerico" },
+            { text: "Demonstra-se despreocupado com respeito ao sofrimento dos demais para atingir suas metas?", type: "colerico" },
+            { text: "É pouco inclinado a trabalhar, preferindo o descanso e tempo livre?", type: "flegmatico" },
+            { text: "Não é perseverante, ou perde rapidamente o interesse no que faz?", type: "sanguineo" },
+            { text: "É inclinado a ser paquerador ou ter proximidades desordenadas?", type: "sanguineo" },
+            { text: "Corrige os outros de forma tão discreta que nem percebem?", type: "flegmatico" },
+            { text: "Vê tudo, ouve tudo e fala de tudo?", type: "sanguineo" },
+            { text: "Ama o trabalho leve que chama a atenção, sem necessidade de muita reflexão?", type: "sanguineo" },
+            { text: "Considera a si mesmo alguém extraordinário que tem sempre razão?", type: "colerico" },
+            { text: "Menospreza ou persegue aos que se atrevem a se lhe opor?", type: "colerico" },
+            { text: "Pode passar rapidamente das lágrimas ao riso?", type: "sanguineo" },
+            { text: "Cativa-o facilmente uma nova idéia ou ambiente?", type: "sanguineo" },
+            { text: "Gosta de variedade em tudo?", type: "sanguineo" },
+            { text: "Mantém-se composto e reflexivo ao enfrentar o sofrimento ou fracasso?", type: "flegmatico" },
+            { text: "Gosta de rir ou tirar sarro dos outros?", type: "sanguineo" },
+            { text: "Surge facilmente uma aversão em seu coração contra quem o fez sofrer?", type: "melancolico" },
+            { text: "Manifesta sua raiva com palavras severas que parecem corteses?", type: "colerico" }
+        ];
+
+        const tempData = {
+            colerico: {
+                title: "Colérico",
+                strengths: ["Vontade firme e decidida", "Energia e audácia", "Espírito de liderança", "Praticidade e rapidez", "Perseverança em objetivos nobres"],
+                weaknesses: ["Orgulho e teimosia", "Ira e impaciência", "Falta de empatia", "Dificuldade em perdoar", "Tendência ao domínio cruel"]
+            },
+            sanguineo: {
+                title: "Sanguíneo",
+                strengths: ["Alegria e otimismo", "Facilidade de relacionamento", "Entusiasmo contagiante", "Capacidade de perdoar rápido", "Adaptabilidade"],
+                weaknesses: ["Inconstância e superficialidade", "Falta de profundidade", "Busca excessiva por prazer", "Vaidade", "Dificuldade de concentração"]
+            },
+            melancolico: {
+                title: "Melancólico",
+                strengths: ["Vida interior profunda", "Reflexivo e prudente", "Fidelidade e lealdade", "Busca pela perfeição", "Compixão e empatia profunda"],
+                weaknesses: ["Tendência à tristeza e desânimo", "Desconfiança excessiva", "Timidez e reserva", "Dificuldade em tomar decisões", "Guarda mágoas por muito tempo"]
+            },
+            flegmatico: {
+                title: "Fleumático",
+                strengths: ["Calma e tranquilidade", "Juízo sensato e prático", "Constância e equilíbrio", "Fácil convivência", "Não se abala com facilidade"],
+                weaknesses: ["Preguiça e indolência", "Falta de entusiasmo", "Passividade", "Indiferença", "Acomodação"]
+            }
+        };
+
+        const list = document.getElementById('questions-list');
+
+        questions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card p-6 border border-gray-100 rounded-xl bg-gray-50';
+            card.innerHTML = `
+                <p class="text-lg font-medium text-gray-800 mb-4">${index + 1}. ${q.text}</p>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <input type="radio" name="q${index}" id="q${index}sim" value="sim" class="hidden radio-custom">
+                        <label for="q${index}sim" class="flex justify-center items-center py-3 border-2 border-gray-200 rounded-lg cursor-pointer transition-all hover:bg-gray-100 font-semibold">SIM</label>
+                    </div>
+                    <div class="flex-1">
+                        <input type="radio" name="q${index}" id="q${index}nao" value="nao" class="hidden radio-custom" checked>
+                        <label for="q${index}nao" class="flex justify-center items-center py-3 border-2 border-gray-200 rounded-lg cursor-pointer transition-all hover:bg-gray-100 font-semibold">NÃO</label>
+                    </div>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const scores = { colerico: 0, sanguineo: 0, melancolico: 0, flegmatico: 0 };
+            
+            questions.forEach((q, index) => {
+                const checked = document.querySelector(`input[name="q${index}"]:checked`);
+                if (checked && checked.value === "sim") {
+                    scores[q.type]++;
+                }
+            });
+
+            const winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            
+            showResult(winner);
+        });
+
+        function showResult(tempKey) {
+            const data = tempData[tempKey];
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+            
+            document.getElementById('temp-title').innerText = data.title;
+            
+            const strengthsList = document.getElementById('temp-strengths');
+            strengthsList.innerHTML = '';
+            data.strengths.forEach(s => {
+                const li = document.createElement('li');
+                li.innerText = s;
+                strengthsList.appendChild(li);
+            });
+
+            const weakList = document.getElementById('temp-weaknesses');
+            weakList.innerHTML = '';
+            data.weaknesses.forEach(w => {
+                const li = document.createElement('li');
+                li.innerText = w;
+                weakList.appendChild(li);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
